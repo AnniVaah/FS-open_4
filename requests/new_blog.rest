@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-    "title": "Kesäkuun havaintoja",
+    "title": "Elokuun havaintoja",
     "author": "AV",
-    "url": "http://www.omablogi.fi/2024_06_694jgk",
+    "url": "http://www.omablogi.fi/2024_08_4jfn6k",
     "likes": 0
 }
