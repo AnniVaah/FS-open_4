@@ -3,18 +3,10 @@ const app = express()
 const cors = require('cors')
 require('dotenv').config()
 const mongoose = require('mongoose')
-
-const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
+const Blog = require('./models/blog')
 
 const mongoUrl = process.env.MONGODB_URI
 //alkup: const mongoUrl = 'mongodb://localhost/bloglist'
-
-const Blog = mongoose.model('Blog', blogSchema)
 
 mongoose.connect(mongoUrl)
 
