@@ -67,10 +67,31 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
-  const authors = _.groupBy(blogs, 'author')
-  const blogsPerAuthor=_.map(authors, (blogs, author) => ({ author, blogs: blogs.length }))
-  const mostBlogs = _.maxBy(blogsPerAuthor, 'blogs')
-  return mostBlogs
+  if (JSON.stringify(blogs)===JSON.stringify([])) return null
+  else {
+    const authors = _.groupBy(blogs, 'author')
+    const blogsPerAuthor=_.map(authors, (blogs, author) => ({ author, blogs: blogs.length }))
+    const mostBlogs = _.maxBy(blogsPerAuthor, 'blogs')
+    return mostBlogs
+  }
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+
+const mostLikes = (blogs) => {
+  if (JSON.stringify(blogs)===JSON.stringify([])) return null
+  else {
+    const authors = _.groupBy(blogs, 'author')
+    //console.log('authors',authors)
+    const likesPerAuthor = _.map(authors, (blogs, author) => {
+      const likesOfThisAuthor = blogs.reduce((subTotal, blog) => subTotal + blog.likes, 0)
+      //console.log('likes of this: ',likesOfThisAuthor)
+      return { author, likes: likesOfThisAuthor }
+    })
+    //console.log('likes per author',likesPerAuthor)
+    const mostLikes = _.maxBy(likesPerAuthor, 'likes')
+    //console.log('mostLikes',mostLikes)
+    return mostLikes
+  }
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }

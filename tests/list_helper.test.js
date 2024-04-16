@@ -100,9 +100,9 @@ describe('favoriteBlog', () => {
 
 describe('mostBlogs', () => {
 
-/*   test('of empty list is null', () => {    //don't even know what it should be actually
-    assert.strictEqual(listHelper.favoriteBlog([]),null)
-  }) */
+  test('of empty list is null', () => {    //don't even know what it should be actually
+    assert.strictEqual(listHelper.mostBlogs([]),null)
+  })
   test('of one object is correct', () => {
     assert.strictEqual(
       JSON.stringify(listHelper.mostBlogs(listWithOneBlog)),
@@ -116,3 +116,24 @@ describe('mostBlogs', () => {
     )
   })
 })
+
+describe('mostLikes', () => {
+
+  test('of empty list is null', () => {    //don't even know what it should be actually
+    assert.strictEqual(listHelper.mostLikes([]),null)
+  })
+  test('of one object is correct', () => {
+    assert.strictEqual(
+      JSON.stringify(listHelper.mostLikes(listWithOneBlog)),
+      JSON.stringify({ author: 'Edsger W. Dijkstra', likes: 5 })
+    )
+  })
+  test('of many blogs is correct', () => {
+    assert.strictEqual(
+      JSON.stringify(listHelper.mostLikes(blogs)),
+      JSON.stringify({ author: 'Edsger W. Dijkstra', likes: 17 })
+    )
+  })
+
+})
+
