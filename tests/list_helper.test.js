@@ -97,3 +97,22 @@ describe('favoriteBlog', () => {
     assert.strictEqual(listHelper.favoriteBlog(blogs),blogs[2])
   })
 })
+
+describe('mostBlogs', () => {
+
+/*   test('of empty list is null', () => {    //don't even know what it should be actually
+    assert.strictEqual(listHelper.favoriteBlog([]),null)
+  }) */
+  test('of one object is correct', () => {
+    assert.strictEqual(
+      JSON.stringify(listHelper.mostBlogs(listWithOneBlog)),
+      JSON.stringify({ author: 'Edsger W. Dijkstra', blogs: 1 })
+    )
+  })
+  test('of many blogs is correct', () => {
+    assert.strictEqual(
+      JSON.stringify(listHelper.mostBlogs(blogs)),
+      JSON.stringify({ author: 'Robert C. Martin', blogs: 3 })
+    )
+  })
+})

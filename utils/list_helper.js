@@ -1,4 +1,6 @@
-const blogs = [
+const _ = require('lodash')
+
+/* const blogs = [
   {
     _id: '5a422a851b54a676234d17f7',
     title: 'React patterns',
@@ -47,7 +49,7 @@ const blogs = [
     likes: 2,
     __v: 0
   }
-]
+] */
 
 const dummy = (blogs) => 1
 
@@ -64,5 +66,11 @@ const favoriteBlog = (blogs) => {
   }
 }
 
+const mostBlogs = (blogs) => {
+  const authors = _.groupBy(blogs, 'author')
+  const blogsPerAuthor=_.map(authors, (blogs, author) => ({ author, blogs: blogs.length }))
+  const mostBlogs = _.maxBy(blogsPerAuthor, 'blogs')
+  return mostBlogs
+}
 
-module.exports = { dummy, totalLikes, favoriteBlog }
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
