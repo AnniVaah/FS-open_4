@@ -29,6 +29,24 @@ test('blogs have key "id"', async () => {
   assert(response.body[0].id)
 })
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'New Blog',
+    author: 'Mää',
+    url: 'https://reactpatterns.com/mää',
+    likes: 1
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
+  const authors = response.body.map(r => r.author)
+  assert(authors.includes('Mää'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
