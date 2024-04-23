@@ -24,6 +24,11 @@ test('there are right amount of blogs', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test('blogs have key "id"', async () => {
+  const response = await api.get('/api/blogs')
+  assert(response.body[0].id)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
