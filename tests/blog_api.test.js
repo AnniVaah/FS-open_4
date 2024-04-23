@@ -59,6 +59,28 @@ test('when "likes" is undefined, it will be set to 0', async () => {
   assert.strictEqual(savedBlog.body.likes,0)
 })
 
+test('title is required when adding a new blog', async() => {
+  const blogWithoutTitle ={
+    author: 'Minää',
+    url: 'https://reactpatterns.com/minää'
+  }
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutTitle)
+    .expect(400)
+})
+
+test('url is required when adding a new blog', async() => {
+  const blogWithoutUrl ={
+    title: 'Blog with no URL',
+    author: 'Minää'
+  }
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutUrl)
+    .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
