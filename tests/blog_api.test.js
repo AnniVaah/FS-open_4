@@ -47,6 +47,18 @@ test('a valid blog can be added', async () => {
   assert(authors.includes('Mää'))
 })
 
+test('when "likes" is undefined, it will be set to 0', async () => {
+  const newBlog = {
+    title: 'Nolikesblog',
+    author: 'Mie',
+    url: 'https://reactpatterns.com/mie'
+  }
+  const savedBlog= await api
+    .post('/api/blogs')
+    .send(newBlog)
+  assert.strictEqual(savedBlog.body.likes,0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
