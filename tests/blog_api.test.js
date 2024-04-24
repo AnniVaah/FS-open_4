@@ -29,9 +29,38 @@ describe('when there is initially some notes saved', () => {
     const response = await api.get('/api/blogs')
     assert(response.body[0].id)
   })
+
+  describe('deleting a specific blog', () => {
+    test('succeeds with a valid id', async () => {
+      const id = helper.initialBlogs[0]._id
+      await api
+        .delete('/api/blogs/'+id)
+        .expect(204)
+    })
+  })
+
+  describe('updating the "likes"', () => {
+    test('succeeds with valid data', async () => {
+      const blog = helper.initialBlogs[0]
+      blog.likes += 1
+      await api
+        .put('/api/blogs/'+blog._id)
+        .send(blog)
+        .expect(200)
+    })
+    test('fails with statuscode 404 if the blog doesn\'t exist', async () => {
+      const id = '66279e2875a7d650a95372b2'
+      const blog = helper.initialBlogs[0]
+      await api
+        .put('/api/blogs/'+id)
+        .send(blog)
+        .expect(404)
+    })
+  })
+
 })
 
-describe('when adding a new blog', async () => {
+describe('when adding a new blog', () => {
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: 'New Blog',
