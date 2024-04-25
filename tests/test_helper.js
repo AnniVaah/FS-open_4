@@ -64,6 +64,37 @@ const blogsInDb = async () => {
   return blogs.map(note => note.toJSON())
 }
 
+const initialUsers = [
+  {
+    username: 'root',
+    name: 'Pohjallinen',
+    password: 'Kissa123'
+  },
+  {
+    username: 'MikkiHiiri',
+    name: 'Mikki Hiiri',
+    password: 'S4l4s4n4'
+  }
+]
+
+const initialUsers2 = [
+  {
+    '_id':{ '$oid':'6628f23e21d07d75b04a0bd2' },
+    'username':'root',
+    'name':'Ekakäyttäjä',
+    'passwordHash':'$2b$10$H7vpWbjHOocF/Rcil9nSMuDoxVzUi0JmjOPxoPGwBcFdzE3IW.7OO',
+    'blogs':[],
+    '__v':{ '$numberInt':'0' }
+  },
+  {
+    '_id':{ '$oid':'6629e6f7d69e35bbfd96b084' },
+    'username':'aku',
+    'passwordHash':'$2b$10$QNyga5ddZz.yIapttYGne.8j5HV9CN3Fk7gh4wwb72vSN77ePWusW',
+    'blogs':[],
+    '__v':{ '$numberInt':'0' }
+  }
+]
+
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, nonExistingId, blogsInDb, initialUsers
 }

@@ -7,7 +7,7 @@ const api = supertest(app)
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
 
-describe('when there is initially some notes saved', () => {
+describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
@@ -112,7 +112,6 @@ describe('when adding a new blog', () => {
       .send(blogWithoutUrl)
       .expect(400)
   })
-
 })
 
 after(async () => {
