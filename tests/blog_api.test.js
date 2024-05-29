@@ -6,6 +6,7 @@ const app = require('../app')
 const api = supertest(app)
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 describe('when there is initially some blogs saved', () => {
   beforeEach(async () => {
@@ -30,9 +31,12 @@ describe('when there is initially some blogs saved', () => {
     assert(response.body[0].id)
   })
 
+  //TÄMÄ KESKEN:
   describe('deleting a specific blog', () => {
     test('succeeds with a valid id', async () => {
+
       const id = helper.initialBlogs[0]._id
+      console.log('ID:',id)
       await api
         .delete('/api/blogs/'+id)
         .expect(204)
@@ -61,56 +65,81 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('when adding a new blog', () => {
-  test('a valid blog can be added', async () => {
-    const newBlog = {
-      title: 'New Blog',
-      author: 'Mää',
-      url: 'https://reactpatterns.com/mää',
-      likes: 1
+  describe('when authorized', async () => {
+    await User.deleteMany({})
+    const newUser = {
+      username: 'MinniH',
+      name: 'Minni Hiiri',
+      password: '12345'
     }
     await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
-    const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
-    const authors = response.body.map(r => r.author)
-    assert(authors.includes('Mää'))
-  })
-
-  test('if "likes" is undefined, it will be set to 0', async () => {
-    const newBlog = {
-      title: 'Nolikesblog',
-      author: 'Mie',
-      url: 'https://reactpatterns.com/mie'
+      .post('/api/users')
+      .send(newUser)
+    const user = {
+      username: 'MinniH',
+      password: '12345'
     }
-    const savedBlog= await api
-      .post('/api/blogs')
-      .send(newBlog)
-    assert.strictEqual(savedBlog.body.likes,0)
-  })
+    const userLoggedIn = await api
+      .post('/api/login')
+      .send(user)
+    const token = userLoggedIn.body.token
 
-  test('title is required', async() => {
-    const blogWithoutTitle ={
-      author: 'Minää',
-      url: 'https://reactpatterns.com/minää'
-    }
-    await api
-      .post('/api/blogs')
-      .send(blogWithoutTitle)
-      .expect(400)
-  })
+    test('a valid blog can be added', async () => {
+      const newBlog = {
+        title: 'New Blog',
+        author: 'Mää',
+        url: 'https://reactpatterns.com/mää',
+        likes: 1
+      }
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .set('Authorization', 'Bearer '+token)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      const response = await api.get('/api/blogs')
+      assert.strictEqual(response.body.length, helper.initialBlogs.length+1)
+      const authors = response.body.map(r => r.author)
+      assert(authors.includes('Mää'))
+    })
 
-  test('url is required', async() => {
-    const blogWithoutUrl ={
-      title: 'Blog with no URL',
-      author: 'Minää'
-    }
-    await api
-      .post('/api/blogs')
-      .send(blogWithoutUrl)
-      .expect(400)
+    test('if "likes" is undefined, it will be set to 0', async () => {
+      const newBlog = {
+        title: 'Nolikesblog',
+        author: 'Mie',
+        url: 'https://reactpatterns.com/mie'
+      }
+      const savedBlog= await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .set('Authorization', 'Bearer '+token)
+      assert.strictEqual(savedBlog.body.likes,0)
+    })
+
+    test('title is required', async() => {
+      const blogWithoutTitle ={
+        author: 'Minää',
+        url: 'https://reactpatterns.com/minää'
+      }
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutTitle)
+        .set('Authorization', 'Bearer '+token)
+        .expect(400)
+    })
+
+    test('url is required', async() => {
+      const blogWithoutUrl ={
+        title: 'Blog with no URL',
+        author: 'Minää'
+      }
+      await api
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .set('Authorization', 'Bearer '+token)
+        .expect(400)
+    })
+
   })
 })
 
