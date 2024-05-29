@@ -31,17 +31,6 @@ describe('when there is initially some blogs saved', () => {
     assert(response.body[0].id)
   })
 
-  //TÄMÄ KESKEN:
-  describe('deleting a specific blog', () => {
-    test('succeeds with a valid id', async () => {
-
-      const id = helper.initialBlogs[0]._id
-      console.log('ID:',id)
-      await api
-        .delete('/api/blogs/'+id)
-        .expect(204)
-    })
-  })
 
   describe('updating the "likes"', () => {
     test('succeeds with valid data', async () => {
@@ -65,6 +54,19 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('when adding a new blog', () => {
+  test('fails if there is no token', async () => {
+    const unauthorizedBlog = {
+      title: 'Unauthorized Blog',
+      author: 'Mää',
+      url: 'https://reactpatterns.com/mää9',
+      likes: 1
+    }
+    await api
+      .post('/api/blogs')
+      .send(unauthorizedBlog)
+      .set('Authorization', 'Bearer')
+      .expect(401)
+  })
   describe('when authorized', async () => {
     await User.deleteMany({})
     const newUser = {
@@ -139,8 +141,27 @@ describe('when adding a new blog', () => {
         .set('Authorization', 'Bearer '+token)
         .expect(400)
     })
-
+    test('[deleting] succeeds with a valid id', async () => {
+      const blogToBeDeleted = {
+        title: 'BlogToBeDeleted',
+        author: 'Mää',
+        url: 'https://reactpatterns.com/mää6',
+        likes: 1
+      }
+      const response = await api
+        .post('/api/blogs')
+        .send(blogToBeDeleted)
+        .set('Authorization', 'Bearer '+token)
+      await api
+        .delete('/api/blogs/'+response.body.id)
+        .set('Authorization', 'Bearer '+token)
+        .expect(204)
+    })
   })
+
+})
+//TÄMÄ KESKEN:
+describe('deleting a specific blog', () => {
 })
 
 after(async () => {
