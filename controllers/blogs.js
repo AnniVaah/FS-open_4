@@ -10,30 +10,33 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  const user = request.user
-  const newBlog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-    user: user._id
-  })
-  const result = await newBlog.save()
-  user.blogs = user.blogs.concat(result._id)
-  await user.save()
-  response.status(201).json(result)
+  if (request.user){
+    const user = request.user
+    const newBlog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+      user: user._id
+    })
+    const result = await newBlog.save()
+    user.blogs = user.blogs.concat(result._id)
+    await user.save()
+    response.status(201).json(result)
+  } else {
+    response.status(401).json({ error: 'token needed to add a blog' })
+  }
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
   const user = request.user
   const blogToDelete = await Blog.findById(request.params.id)
-  if (JSON.stringify(blogToDelete.user)===JSON.stringify(user._id)){
+  if (user && JSON.stringify(blogToDelete.user)===JSON.stringify(user._id)){
     await Blog.findByIdAndDelete(request.params.id)
     response.status(204).end()
   }else{
     response.status(401).json({ error: 'unauthorized to delete' })
   }
-
 })
 
 blogsRouter.put('/:id', async (request, response) => {

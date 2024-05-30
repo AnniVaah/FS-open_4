@@ -31,7 +31,6 @@ describe('when there is initially some blogs saved', () => {
     assert(response.body[0].id)
   })
 
-
   describe('updating the "likes"', () => {
     test('succeeds with valid data', async () => {
       const blog = helper.initialBlogs[0]
@@ -50,7 +49,6 @@ describe('when there is initially some blogs saved', () => {
         .expect(404)
     })
   })
-
 })
 
 describe('when adding a new blog', () => {
@@ -64,7 +62,6 @@ describe('when adding a new blog', () => {
     await api
       .post('/api/blogs')
       .send(unauthorizedBlog)
-      .set('Authorization', 'Bearer')
       .expect(401)
   })
   describe('when authorized', async () => {
